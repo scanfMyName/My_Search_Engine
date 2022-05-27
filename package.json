@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start":"node server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start backend": "nodemon server.js",
     "dev": "nodemon app.js server.js"
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@heroku/buildpack-registry": "^1.0.1",
     "cors": "^2.8.5",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
