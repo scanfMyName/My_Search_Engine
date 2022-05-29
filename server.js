@@ -194,7 +194,14 @@ app.get("/search", (req, res) => {
   setTimeout(() => {
     let arrtitle = [];
     let ansarr = [];
-    if (ansIndex[0] == 0) {
+    let flag =1;
+    for(let i=0;i<10;i++){
+      if(ansIndex[i]<=0){
+          flag =0;
+          break;
+      }
+    }
+    if (flag == 0) {
       let ansarrObj = {
         flag: 0,
         status: 404,
