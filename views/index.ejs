@@ -10,31 +10,36 @@
   <body>
     <h1 class="SrchEngnTitle">Confused Unga Bunga</h1>
     <div class="SearchFdiv">
-    <form class = "searchForm">
-      <input class="FormTxtarea" type="text" name="question" id="question" />
-      <input class ="sbtn"type="submit" value="Let's Go" />
-    </form>
-  </div>
-    <div class="loading"></div>
-    <div class="SearchResultOutdiv">
-    <% for(let i=0;i<10; i++) {%>
-    <div class="question">
-      <div class="title"></div>
-      <div class="url">
-        <a href="" class="link"></a>
-      </div>
-      <div class="body"></div>
+      <form class="searchForm">
+        <input class="FormTxtarea" type="text" name="question" id="question" />
+        <input class="sbtn" type="submit" value="Let's Go" />
+      </form>
     </div>
-    <% } %>
+    <div class="loading"></div>
+   
+    <div class="SearchResultOutdiv">
+      <div class="heading"></div>
+      <% for(let i=0;i<10; i++) {%>
+      <div class="question">
+        <div class="title"></div>
+        <div class="url">
+          <a href="" class="link"></a>
+        </div>
+        <div class="body"></div>
+      </div>
+      <% } %>
     </div>
   </body>
 </html>
 
 <script>
+  let error = false;
   const form = document.querySelector("form");
   const questionElement = form.question;
+  const heading = document.querySelectorAll(".heading");
   const questions = document.querySelectorAll(".question");
   const titles = document.querySelectorAll(".title");
+
   const urls = document.querySelectorAll(".url");
   const quesBody = document.querySelectorAll(".body");
   const loadingDiv = document.querySelector(".loading");
@@ -54,8 +59,8 @@
     }
     loadingDiv.innerHTML = `Loading...`;
     for (let i = 0; i < 10; i++) {
-        link[i].innerHTML = ``;
-        link[i].href = "";
+      link[i].innerHTML = ``;
+      link[i].href = "";
     }
     //fetch
     try {
@@ -63,18 +68,30 @@
         method: "GET",
       });
       const data = await res.json();
+      
       loadingDiv.innerHTML = ``;
-      for (let i = 0; i < 10; i++) {
+      
+      if(data[0].flag == 0){
+        error = true
+        alert("The query you have typed either have a typo or is incomplete please try to put the whole question with all statements to get the better result")
+      }
+      else{
+        heading.innerHTML = `<h2>The best search results from our database are:-</h2>`
+        for (let i = 0; i < 10; i++) {
         titles[i].innerHTML = `<h3>${data[i].title}</h3>`;
-        link[i].innerHTML = `Click here`;
+        link[i].innerHTML = `Click here to see the complete problem`;
         let q_id = "/CompleteQ/" + data[i].ind.toString();
-        link[i].href = q_id
+        link[i].href = q_id;
       }
       for (let i = 0; i < 10; i++) {
         quesBody[i].innerHTML = `<h4>${data[i].statement}</h4>`;
       }
+      }
+      
     } catch (error) {
       alert(error);
+      loadingDiv.innerHTML = ``;
+      error = true;
     }
   });
 </script>

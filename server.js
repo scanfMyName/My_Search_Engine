@@ -7,6 +7,7 @@ const fs = require("fs/promises");
 const { readFileSync } = require("fs");
 const { type } = require("os");
 const { stringify } = require("querystring");
+const { traceDeprecation } = require("process");
 //Creating our server
 const app = express();
 
@@ -19,38 +20,71 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "/pub")));
 
 const PORT = process.env.PORT || 3000;
-let tfidr = readFileSync("./Files/tfidr.txt", (encoding = "utf8"));
-let title = readFileSync(
-  "./Files/Leetcode_problems_title.txt",
-  (encoding = "utf8")
-);
-let link = readFileSync(
-  "./Files/Leetcode_problems_link.txt",
-  (encoding = "utf8")
-);
-let keyWord = readFileSync("./Files/keywords.txt", "utf8");
+// let tfidr = readFileSync("./Files/tfidr.txt", (encoding = "utf8"));
+// let title = readFileSync(
+//   "./Files/Leetcode_problems_title.txt",
+//   (encoding = "utf8")
+// );
+// let link = readFileSync(
+//   "./Files/Leetcode_problems_link.txt",
+//   (encoding = "utf8")
+// );
+// let keyWord = readFileSync("./Files/keywords.txt", "utf8");
 
-tfidr = tfidr.split(/\n/);
-title = title.split(/\n/);
-link = link.split(/\n/);
-keyWord = keyWord.split(" ");
-for (let i = 0; i < 147; i++) {
-  tfidr[i] = tfidr[i].split(" ");
-}
+// tfidr = tfidr.split(/\n/);
+// title = title.split(/\n/);
+// link = link.split(/\n/);
+// keyWord = keyWord.split(" ");
+// for (let i = 0; i < 147; i++) {
+//   tfidr[i] = tfidr[i].split(" ");
+// }
 
-for (let i = 0; i < 147; i++) {
-  tfidr[i] = tfidr[i].map((value) => {
-    return Number(value);
-  });
-}
+// for (let i = 0; i < 147; i++) {
+//   tfidr[i] = tfidr[i].map((value) => {
+//     return Number(value);
+//   });
+// }
 // GET, POST, PATCH, DELETE
 
+let title = "";
+let tfidr = "";
+let keyWord = "";
+let link = "";
 //@GET /
 //description: GET request to home page
+
+function setTheglobal() {
+  tfidr = readFileSync("./Files/tfidr.txt", (encoding = "utf8"));
+  title = readFileSync(
+    "./Files/Leetcode_problems_title.txt",
+    (encoding = "utf8")
+  );
+  link = readFileSync(
+    "./Files/Leetcode_problems_link.txt",
+    (encoding = "utf8")
+  );
+  keyWord = readFileSync("./Files/keywords.txt", "utf8");
+
+  tfidr = tfidr.split(/\n/);
+  title = title.split(/\n/);
+  link = link.split(/\n/);
+  keyWord = keyWord.split(" ");
+  for (let i = 0; i < 147; i++) {
+    tfidr[i] = tfidr[i].split(" ");
+  }
+
+  for (let i = 0; i < 147; i++) {
+    tfidr[i] = tfidr[i].map((value) => {
+      return Number(value);
+    });
+  }
+}
 app.get("/", (req, res) => {
-  res.render("index");
+  setTheglobal();
+  res.render("index", { error: false });
 });
 app.get("/CompleteQ/:id", (req, res) => {
+  setTheglobal();
   let ind = req.params.id;
   let filepath = "./Files/problem" + ind.toString() + ".txt";
   let qbody = readFileSync(filepath, "utf8");
@@ -73,13 +107,12 @@ app.get("/search", (req, res) => {
     return_changed_case: true,
     remove_duplicates: false,
   });
-  // The below variable is to set the no. of problems we have til now in our dataset
+  setTheglobal();
   let nd = 147;
   let nk = 805; // no. of keywords
   let keyInd = [];
 
   console.log(typeof keyWord);
-  // first I will find the index of the keyword which are present in the query from our keyword.txt
 
   for (let i = 0; i < extraction_res.length; i++) {
     let j = keyWord.indexOf(extraction_res[i]);
@@ -101,9 +134,7 @@ app.get("/search", (req, res) => {
   Object.keys(keyInd).map(function (key, value) {
     keyInd[key] /= nk;
   });
-  // now we have created the tf vector for the query now we need to multiply it with our idf vector
 
-  // below we are making our tf vector compaitible to be multiply with idf vector of matrix
   delete keyInd["-1"];
   for (let i = 1; i <= nk; i++) {
     if (i in keyInd == false) {
@@ -116,25 +147,15 @@ app.get("/search", (req, res) => {
     }
   }
 
-  // const lines = (tfidr.match(/\n/g) || "").length + 1;
-
   let idr = tfidr[nd];
 
   idr = idr.split(" ");
   let it = [];
   it = Object.values(keyInd);
   keyInd = Object.values(keyInd);
-
-  // need to convert idr into a array or object in javascript
   idr = idr.map((value) => {
     return Number(value);
   });
-
-  // console.log("idr[0] type:", typeof idr[0]);
-  // console.log("tfidr[0][0] type:", typeof tfidr[0][0]);
-  // and then I will do the multiplication to the last row of our tfidx.txt file to get the tfidf vector for our query
-
-  // Now we want to use the tfidf matrix present in our database and use that to generate the tfidf vector for the asked query
   let tfidrquery = [];
   tfidrquery = keyInd.map(function (value, index) {
     value *= idr[index];
@@ -142,7 +163,6 @@ app.get("/search", (req, res) => {
   });
 
   let result = [];
-  // now using that vector we will do the dot product with all of the document tfidf vector present in the database
   for (let i = 0; i < nd; i++) {
     let sum = 0;
     for (let j = 0; j < nk; j++) {
@@ -150,12 +170,10 @@ app.get("/search", (req, res) => {
     }
     result.push(sum);
   }
-  // now we will  arrange the above result in decreasing order along with their indexes and use the top ten objects from there
   let result1 = [];
   for (let i of result) {
     result1.push(i);
   }
-  // console.log(result1)
   let max147 = [];
 
   result1.sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
@@ -172,58 +190,68 @@ app.get("/search", (req, res) => {
   }
 
   console.log(ansIndex);
+
+  setTimeout(() => {
+    let arrtitle = [];
+    let ansarr = [];
+    if (ansIndex[0] == 0) {
+      let ansarrObj = {
+        flag: 0,
+        status: 404,
+        staement: "Not able to find the right answer to your query",
+      };
+      ansarr.push(ansarrObj);
+    } else {
+      for (let i = 0; i < 10; i++) {
+        arrtitle.push(
+          title[ansIndex[i]]
+            .replaceAll(/[0-9]/g, "")
+            .replaceAll(".", "")
+            .replace(/[\r\n]/gm, "")
+        );
+      }
+      let arrFirstLine = [];
+      let allFiles = [];
+      let arrLink = [];
+      for (let i = 0; i < 10; i++) {
+        arrLink.push(link[ansIndex[i]].replace(/[\r\n]/gm, ""));
+      }
+      for (i = 0; i < 10; i++) {
+        let firstline;
+        let filepath = "./Files/problem" + ansIndex[i].toString() + ".txt";
+        let completefile = readFileSync(filepath, (encoding = "utf8"));
+
+        allFiles.push(completefile);
+        completefile = completefile.split(/\n/);
+        firstline = completefile[0].replace(/[\r\n]/gm, "");
+        arrFirstLine.push(firstline);
+      }
+      // console.log(arrFirstLine);
+      // console.log(arrtitle);
+      // console.log(arrLink);
+
+      for (let i = 0; i < 10; i++) {
+        let firstline = arrFirstLine[i];
+        let problmtitle = arrtitle[i];
+        let tmpobj = {
+          flag:1,
+          title: problmtitle,
+          statement: firstline,
+          ind: ansIndex[i],
+        };
+        ansarr.push(tmpobj);
+      }
+    }
+
+    console.log(ansarr);
+    res.json(ansarr);
+  }, 2000);
+
   /// and then we will publish the title of those top 10 results along with their first line
 
   // now we will need to use these 10 index and get their title
 
   //TF-IDF ALgo
-
-  setTimeout(() => {
-    let arrtitle = [];
-    let ansarr = [];
-    for (let i = 0; i < 10; i++) {
-      arrtitle.push(
-        title[ansIndex[i]]
-          .replaceAll(/[0-9]/g, "")
-          .replaceAll(".", "")
-          .replace(/[\r\n]/gm, "")
-      );
-    }
-    let arrFirstLine = [];
-    let allFiles = [];
-    let arrLink = [];
-    // str.replace(/[\r\n]/gm, '')
-    for (let i = 0; i < 10; i++) {
-      arrLink.push(link[ansIndex[i]].replace(/[\r\n]/gm, ""));
-    }
-    for (i = 0; i < 10; i++) {
-      let firstline;
-      let filepath = "./Files/problem" + ansIndex[i].toString() + ".txt";
-      let completefile = readFileSync(filepath, (encoding = "utf8"));
-
-      allFiles.push(completefile);
-      completefile = completefile.split(/\n/);
-      firstline = completefile[0].replace(/[\r\n]/gm, "");
-      arrFirstLine.push(firstline);
-    }
-    // console.log(arrFirstLine);
-    // console.log(arrtitle);
-    // console.log(arrLink);
-
-    for (let i = 0; i < 10; i++) {
-      let firstline = arrFirstLine[i];
-      let problmtitle = arrtitle[i];
-      let tmpobj = {
-        title: problmtitle,
-        statement: firstline,
-        ind: ansIndex[i],
-      };
-      ansarr.push(tmpobj);
-    }
-    // console.log(ansarr);
-
-    res.json(ansarr);
-  }, 2000);
 });
 
 //Assigning Port to our application

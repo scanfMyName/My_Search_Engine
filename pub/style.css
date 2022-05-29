@@ -35,10 +35,7 @@
     box-sizing: border-box;
     /* width: ; */
   }
-  .searchForm{
-       
-  }
-
+  
   .FormTxtarea{
     text-align: center;
     margin-left: 3vw;
@@ -61,7 +58,9 @@
     margin-top: 2vh;
 
   }
-
+  .heading{
+    margin-left: 10vw;
+  }
   .question{
     border: rgb(65, 62, 62);
     background: rgb(137, 137, 229);
