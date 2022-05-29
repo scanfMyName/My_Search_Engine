@@ -1,6 +1,6 @@
 # My_Search_Engine
-
-I have completed this project by dividing it into 2 components those are:-
+This is a search engine basically designed for searching Algo DS questions. For setting up the database we uses the Leetcode as a platform from where we scrap the content for our database.
+To complete this project we divide it into 2 components, which are:-
 
 1. To get the question text files, their title and respective links for each question we have done web scraping in python using modules like beautifulsauce selenium, 
 web driver manager etc. and then we go for finding the keywords present in the whole corpus and store them in a text file. After that we go for making the tfidr matrix and then we store it in a txt file along with the scraped complete questions, the official links of the questions  and questions' titles.
