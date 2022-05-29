@@ -68,7 +68,7 @@
     width: 80vw;
     margin-left: 3vw;
     padding-left: 2vw;
-    padding-bottom: 1vh;
+    /* padding-bottom: 1vh; */
     margin-bottom: 2vh;
     border-radius: 0.5rem;
   }
