@@ -82,129 +82,129 @@ f.close()
 # present in that problem which
 # will helpful to calculate the tf matrix
 # #
+f = open("Leetcode_problems_title.txt", "+r")
+stop_words = ["a", "an", "is", "the", "that", "they", "may", "if", "for", "return", "of", "that", "and", "are", "as", "or", "in", "", "such", "you"]
+
+stop_words = stop_words + stopwords.words('english')
+# _idf = dict()
+n = []
+key_words = dict()
+fm = open("keywords.txt", "+w")
+j = 0  # this j will store the total no. of keywords
+# f.readline()
+
+#  Lets we set the variable which will store the no. of document we gonnna read as nd
+nd = 147
+for i in range(1, nd):
+    # title = f.readline()
+    # title = title.replace(". ", "")#     # title = title.replace(" ", "_")
+    # table = str.maketrans('', '', digits)
+    # title = title.translate(table)
+    # title.translate(None, digits)
+    # title1 = title.strip() + "_imprv.txt"
+    # title = title.strip() + ".txt"
+    # lines = []
+    title = "problem" + str(i) + ".txt"
+
+    with open(title, 'r') as fp:
+        lines = fp.readlines()
+    with open("temp.txt", 'w') as fp:
+        for number, line in enumerate(lines):
+            if "Example" in line:
+                # print(line)
+                break
+            else:
+                # print(line)
+                fp.write(line)
+    text = open("temp.txt", "r")
+    for line in text:
+        line = line.strip()
+        line = line.lower()
+        line = line.translate(line.maketrans("", "", string.punctuation))
+
+        words = line.split(" ")
+        for word in words:
+            if word not in stop_words:
+                if word.isdecimal() is not True and word not in key_words:
+                    # word = lemmatizer.lemmatize(word)
+                    # if word == "given":
+                    #     print("there is a keyword name given:")
+                    key_words[word] = j
+                    fm.write(word + ' ')
+                    j += 1
+    text.close()
+    file = open("temp.txt", "rt")
+    data = file.read()
+    words = data.split()
+    n.append(len(words))
+    file.close()
+# f.close()
+fm.close()
+
+# stop_words.append("given")
+# now make tf matrix for every key_word
+tfidr = [[0 for i in range(j)] for k in range(nd+1)]  # one extra raw to store the idr values for all the words
 # f = open("Leetcode_problems_title.txt", "+r")
-# stop_words = ["a", "an", "is", "the", "that", "they", "may", "if", "for", "return", "of", "that", "and", "are", "as", "or", "in", "", "such", "you"]
-#
-# stop_words = stop_words + stopwords.words('english')
-# # _idf = dict()
-# n = []
-# key_words = dict()
-# fm = open("keywords.txt", "+w")
-# j = 0  # this j will store the total no. of keywords
-# # f.readline()
-#
-# #  Lets we set the variable which will store the no. of document we gonnna read as nd
-# nd = 147
-# for i in range(1, nd):
-#     # title = f.readline()
-#     # title = title.replace(". ", "")#     # title = title.replace(" ", "_")
-#     # table = str.maketrans('', '', digits)
-#     # title = title.translate(table)
-#     # title.translate(None, digits)
-#     # title1 = title.strip() + "_imprv.txt"
-#     # title = title.strip() + ".txt"
-#     # lines = []
-#     title = "problem" + str(i) + ".txt"
-#
-#     with open(title, 'r') as fp:
-#         lines = fp.readlines()
-#     with open("temp.txt", 'w') as fp:
-#         for number, line in enumerate(lines):
-#             if "Example" in line:
-#                 # print(line)
-#                 break
-#             else:
-#                 # print(line)
-#                 fp.write(line)
-#     text = open("temp.txt", "r")
-#     for line in text:
-#         line = line.strip()
-#         line = line.lower()
-#         line = line.translate(line.maketrans("", "", string.punctuation))
-#
-#         words = line.split(" ")
-#         for word in words:
-#             if word not in stop_words:
-#                 if word.isdecimal() is not True and word not in key_words:
-#                     # word = lemmatizer.lemmatize(word)
-#                     # if word == "given":
-#                     #     print("there is a keyword name given:")
-#                     key_words[word] = j
-#                     fm.write(word + ' ')
-#                     j += 1
-#     text.close()
-#     file = open("temp.txt", "rt")
-#     data = file.read()
-#     words = data.split()
-#     n.append(len(words))
-#     file.close()
-# # f.close()
-# fm.close()
-#
-# # stop_words.append("given")
-# # now make tf matrix for every key_word
-# tfidr = [[0 for i in range(j)] for k in range(nd+1)]  # one extra raw to store the idr values for all the words
-# # f = open("Leetcode_problems_title.txt", "+r")
-# for i in range(1, nd):
-#     title = "problem" + str(i) + ".txt"
-#     with open(title, 'r') as fp:
-#         lines = fp.readlines()
-#     with open("temp.txt", 'w') as fp:
-#         for number, line in enumerate(lines):
-#             if "Example" in line:
-#                 # print(line)
-#                 break
-#             else:
-#                 # print(line)
-#                 fp.write(line)
-#     text = open("temp.txt", "r")
-#     for line in text:
-#         line = line.strip()
-#         line = line.lower()
-#         line = line.translate(line.maketrans("", "", string.punctuation))
-#
-#         words = line.split(" ")
-#
-#         for word in words:
-#             if word.isdecimal() is not True and word not in stop_words:
-#                 ind = key_words[word]
-#                 # ind =1
-#                 tfidr[i][ind] += 1
-#     text.close()
+for i in range(1, nd):
+    title = "problem" + str(i) + ".txt"
+    with open(title, 'r') as fp:
+        lines = fp.readlines()
+    with open("temp.txt", 'w') as fp:
+        for number, line in enumerate(lines):
+            if "Example" in line:
+                # print(line)
+                break
+            else:
+                # print(line)
+                fp.write(line)
+    text = open("temp.txt", "r")
+    for line in text:
+        line = line.strip()
+        line = line.lower()
+        line = line.translate(line.maketrans("", "", string.punctuation))
+
+        words = line.split(" ")
+
+        for word in words:
+            if word.isdecimal() is not True and word not in stop_words:
+                ind = key_words[word]
+                # ind =1
+                tfidr[i][ind] += 1
+    text.close()
+    for k in range(j):
+        # tfidr[i][k] /= n[i]
+        tfidr[i][k] /= j
+# f.close()
+
+# Now we will go for making the idr array for each word in the last row of our tridr 2d array
+for i in range(j):
+    count = 0
+    for k in range(nd):
+        if tfidr[k][i] != 0:
+            count += 1
+    # if count != 0:
+    tfidr[nd][i] = log10(nd / (count+1))
+    # else:
+    #     tfidr[nd][i] = 0
+
+for i in range(nd):
+    for k in range(j):
+        tfidr[i][k] *= tfidr[nd][k]
+
+# Now we will print the whole tfidr matrix
+# for i in range(nd+1):
 #     for k in range(j):
-#         # tfidr[i][k] /= n[i]
-#         tfidr[i][k] /= j
-# # f.close()
-#
-# # Now we will go for making the idr array for each word in the last row of our tridr 2d array
-# for i in range(j):
-#     count = 0
-#     for k in range(nd):
-#         if tfidr[k][i] != 0:
-#             count += 1
-#     # if count != 0:
-#     tfidr[nd][i] = log10(nd / (count+1))
-#     # else:
-#     #     tfidr[nd][i] = 0
-#
-# for i in range(nd):
-#     for k in range(j):
-#         tfidr[i][k] *= tfidr[nd][k]
-#
-# # Now we will print the whole tfidr matrix
-# # for i in range(nd+1):
-# #     for k in range(j):
-# #         print(tfidr[i][k], end=' ')
-# #     print("\n")
-#
-# print(j)
-# # Now I will show you all the key word in my file
-# # print(key_words.keys())
-#
-# # Now we will make a file for our tfidr matrix
-#
-# with open("tfidr.txt", "+w") as fm:
-#     for i in range(nd+1):
-#         for d in tfidr[i]:
-#             fm.write(f"{d} ")
-#         fm.write('\n')
+#         print(tfidr[i][k], end=' ')
+#     print("\n")
+
+print(j)
+# Now I will show you all the key word in my file
+# print(key_words.keys())
+
+# Now we will make a file for our tfidr matrix
+
+with open("tfidr.txt", "+w") as fm:
+    for i in range(nd+1):
+        for d in tfidr[i]:
+            fm.write(f"{d} ")
+        fm.write('\n')
