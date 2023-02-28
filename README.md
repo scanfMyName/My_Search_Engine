@@ -38,3 +38,7 @@ Once the web search engine is running, you can type or speak your query or quest
 - Node.js
 - Express
 - EJS
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
