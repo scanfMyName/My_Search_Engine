@@ -1,8 +1,39 @@
-# My_Search_Engine
-This is a search engine basically designed for searching Algo DS questions. For setting up the database we uses the Leetcode as a platform from where we scrap the content for our database.
-To complete this project we divide it into 2 components, which are:-
+# Web Search Engine Based on TF-IDF Algorithm
 
-1. To get the question text files, their title and respective links for each question we have done web scraping in python using modules like beautifulsauce, selenium, 
-web driver manager etc. and then we go for finding the keywords present in the whole corpus and store them in a text file. After that we go for making the tfidr matrix and then we store it in a txt file along with the scraped complete questions, the official links of the questions  and questions' titles.
+This project is a web search engine that is based on the TF-IDF algorithm. It allows users to search for Data structure and algorithm questions from Leetcode and returns the most relevant results based on their queries.
 
-2. Now we will be building up a node app that will be setting its frontend using the ejs files and backend using the node itself. We will be using the keyword extractor module (for the  search query) available in node and then we will be using the tfidr matrix that we have created in the previous component and using the cosine similarity rule, we go for finding the 10 best possible result for query from our scraped database and send them to front end to show them in a list wise manner. Now for each result we need also to show the whole question and the corresponding link of the question from where we have extracted that question, so we make a new api for that that is "/CompleteQ/:q_id" and in this we will be showing the question of the corresponding search result.   
+## Getting Started
+
+To get started with the project, you will need to follow these steps:
+
+1. Clone the repository to your local machine.
+2. Create a Pycharm project on your local machine with main.py file and vitual environment in it, and copy the code as what written in the main.py file in the cloned project.
+3. Install the required dependencies for the main.py file(or as mentioned below) in the virtual environment.
+4. Run `main.py` to fetch questions from Leetcode, scrape their links, and store the questions in text files and scrap the question texts and generate tfidf matrix.
+5. Now copy all the files, what you get by running the main.py file inside the folder where your node or server.js file residing.
+5. Run `npm install` to install the required modules for the Node.js application.
+6. Run `npm start` to start the Node.js application.
+7. Open your web browser and go to `http://localhost:3000` to access the web search engine.
+
+## How to Use
+
+Once the web search engine is running, you can type or speak your query or question in the search box. The engine will apply lemmatization and generate a simple query text. It will then use cosine similarity to find the most relevant questions from the TF-IDF matrix and display them in the search results. You can click on a question to view its full text and link to the original question on Leetcode.
+
+## Modules required for pyCharm project to run
+
+- bs4
+- math
+- numpy
+- nltk
+- string
+- Selenium
+- webdriver_manager
+
+
+## Dependencies
+
+- Python 3.x
+- PyCharm
+- Node.js
+- Express
+- EJS
